@@ -51,4 +51,4 @@ jobs:
           TOKEN: ${{ secrets.TOKEN }}
               
       - name: Git push
-        run: git push origin HEAD:gh-pages
+        run: git push origin gh-pages
