@@ -1,0 +1,44 @@
+name: CI
+run-name: ssg blog deploy 
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: deploy
+    steps:
+      - name: Checkout the current branch
+        uses: actions/checkout@v3
+
+      - name: Clone the repo 
+        run: git clone https://github.com/misopog/blog src/ -b main
+      
+      - name: Create the dst folder
+        run: mkdir dst
+
+      - name: Install ssg
+        run: curl -sLO https://rgz.ee/bin/ssg && chmod 777 ssg 
+
+      - name: Build the website
+        run: rm dst/.files && ./ssg src dst 'blog' 'https://blog.misopog.xyz'
+      
+      - name: Change the directory
+        run: cd dst/
+
+      - name: Add the files to git
+        run: git add .
+      
+      - name: Git creds
+        run: git config user.name "misopog" && git config user.email "mikenexus2010@gmail.com"
+
+      - name: Git commit
+        run: git commit -m "Rebuilt the website"
+      
+      - name: Git origin
+        run: git remote add origin https://$TOKEN@github.com/misopog/blog
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+
+      - name: Git push
+        run: git push -u origin gh-pages
