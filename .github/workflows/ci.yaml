@@ -2,6 +2,8 @@ name: CI
 run-name: ssg blog deploy 
 on:
   push:
+    branches:
+          - master
 
 jobs:
   build:
@@ -24,31 +26,8 @@ jobs:
       - name: Build the website
         run: ./ssg src dst 'blog' 'https://blog.misopog.xyz'
       
-      - name: Remove all files
-        run: rm -r src/ ssg
-
-      - name: Move the files around
-        run: mv dst/* . && rm -r dst && ls -laH
-
-      - name: Github Cli auth
-        run: gh auth login --with-token $GH_TOKEN
-        env:
-          GH_TOKEN: ${{ github.token }}
-          
-      - name: Init the repo
-        run: git init
-        
-      - name: Add the files to git
-        run: git add .
-      
-      - name: Git creds
-        run: git config user.name "misopog" && git config user.email "mikenexus2010@gmail.com"
-
-      - name: Git commit
-        run: git commit -m "Rebuilt the website"
-      
-      - name: Git origin
-        run: git remote add origin https://github.com/misopog/blog
-              
-      - name: Git push
-        run: git push origin gh-pages
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@4.1.0
+        with:
+          branch: gh-pages
+          folder: dst
