@@ -26,15 +26,12 @@ jobs:
       
       - name: Remove all files
         run: rm -r src/ ssg
-
-      - name: CD to dst
-        run: cd dst/
-
+        
       - name: Init the repo
         run: git init
         
       - name: Add the files to git
-        run: git add --all
+        run: git add dst/*
       
       - name: Git creds
         run: git config user.name "misopog" && git config user.email "mikenexus2010@gmail.com"
@@ -46,9 +43,6 @@ jobs:
         run: git remote add origin https://$TOKEN@github.com/misopog/blog
         env:
           TOKEN: ${{ secrets.TOKEN }}
-
-      #- name: Git pull
-      #  run: git pull --rebase origin gh-pages
         
       - name: Git push
         run: git push origin gh-pages --force
