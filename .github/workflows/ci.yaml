@@ -26,18 +26,15 @@ jobs:
       
       - name: Remove all files
         run: rm -r src/ ssg
+
+      - name: Move the files around
+        run: mv dst/* . && rm -r dst && ls -laH
         
       - name: Init the repo
         run: git init
         
       - name: Add the files to git
-        run: git add dst/.
-      
-      - name: Show the status
-        run: git status
-
-      - name: debug
-        run: git branch && printf "\n" && find . -type f
+        run: git add .
       
       - name: Git creds
         run: git config user.name "misopog" && git config user.email "mikenexus2010@gmail.com"
