@@ -36,6 +36,9 @@ jobs:
       - name: Add the files to git
         run: git add dst/.
 
+      - name: list files
+        run: ls -laH dst/
+      
       - name: Show the status
         run: git status
       
