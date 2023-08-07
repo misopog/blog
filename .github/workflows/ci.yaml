@@ -44,8 +44,8 @@ jobs:
         env:
           TOKEN: ${{ secrets.TOKEN }}
 
-      - name: Git pull
-        run: git pull --rebase origin gh-pages
+      #- name: Git pull
+      #  run: git pull --rebase origin gh-pages
         
       - name: Git push
-        run: git push -u origin gh-pages
+        run: git push origin gh-pages
