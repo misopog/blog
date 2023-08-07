@@ -2,8 +2,7 @@ name: CI
 run-name: ssg blog deploy 
 on:
   push:
-    branches:
-          - master
+    
 
 jobs:
   build:
