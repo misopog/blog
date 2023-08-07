@@ -27,6 +27,9 @@ jobs:
       - name: Change the directory
         run: cd dst/
 
+      - name: Init the repo
+        run: git init
+        
       - name: Add the files to git
         run: git add .
       
