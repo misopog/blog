@@ -24,8 +24,8 @@ jobs:
       - name: Build the website
         run: ./ssg src dst 'blog' 'https://blog.misopog.xyz'
       
-      - name: Change the directory
-        run: cd dst/
+      - name: remove all files
+        run: rm -r src/ ssg
 
       - name: show me the files i need it plsplspls
         run: ls -laH
