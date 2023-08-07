@@ -46,6 +46,9 @@ jobs:
         run: git remote add origin https://$TOKEN@github.com/misopog/blog
         env:
           TOKEN: ${{ secrets.TOKEN }}
-        
+
+      - name: Git checkout
+        run: git checkout -b gh-pages 
+      
       - name: Git push
-        run: git push origin gh-pages --force
+        run: git push origin gh-pages
