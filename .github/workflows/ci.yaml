@@ -24,11 +24,11 @@ jobs:
       - name: Build the website
         run: ./ssg src dst 'blog' 'https://blog.misopog.xyz'
       
-      - name: remove all files
+      - name: Remove all files
         run: rm -r src/ ssg
 
-      - name: show me the files i need it plsplspls
-        run: ls -laH
+      - name: CD to dst
+        run: cd dst/
 
       - name: Init the repo
         run: git init
