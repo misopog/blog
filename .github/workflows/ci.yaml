@@ -23,9 +23,6 @@ jobs:
       
       - name: Build the website
         run: ./ssg src dst 'blog' 'https://blog.misopog.xyz'
-
-      - name: Create CNAME
-        run: touch dst/CNAME && echo "blog.misopog.xyz" >> dst/CNAME
       
       - name: Remove all files
         run: rm -r src/ ssg
@@ -35,9 +32,6 @@ jobs:
         
       - name: Add the files to git
         run: git add dst/.
-
-      - name: list files
-        run: ls -laH dst/
       
       - name: Show the status
         run: git status
