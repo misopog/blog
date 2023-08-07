@@ -49,6 +49,9 @@ jobs:
 
       - name: Git checkout
         run: git checkout -b gh-pages 
-      
+
+      - name: Git fetch
+        run: git fetch
+              
       - name: Git push
         run: git push origin gh-pages
