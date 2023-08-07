@@ -29,7 +29,12 @@ jobs:
 
       - name: Move the files around
         run: mv dst/* . && rm -r dst && ls -laH
-        
+
+      - name: Github Cli auth
+        run: gh auth --with-token $GH_TOKEN
+        env:
+          GH_TOKEN: ${{ github.token }}
+          
       - name: Init the repo
         run: git init
         
@@ -43,9 +48,7 @@ jobs:
         run: git commit -m "Rebuilt the website"
       
       - name: Git origin
-        run: git remote add origin https://$TOKEN@github.com/misopog/blog
-        env:
-          TOKEN: ${{ secrets.TOKEN }}
+        run: git remote add origin https://github.com/misopog/blog
               
       - name: Git push
         run: git push origin gh-pages
