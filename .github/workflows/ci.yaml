@@ -14,10 +14,13 @@ jobs:
       
       - name: Create the dst folder
         run: mkdir dst
-
+        
       - name: Install ssg
         run: curl -sLO https://rgz.ee/bin/ssg && chmod 777 ssg 
 
+      - name: Install lowdown
+        run: sudo apt install lowdown
+      
       - name: Build the website
         run: ./ssg src dst 'blog' 'https://blog.misopog.xyz'
       
