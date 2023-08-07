@@ -31,7 +31,10 @@ jobs:
         run: git init
         
       - name: Add the files to git
-        run: git add dst/*
+        run: git add dst/.
+
+      - name: Show the status
+        run: git status
       
       - name: Git creds
         run: git config user.name "misopog" && git config user.email "mikenexus2010@gmail.com"
