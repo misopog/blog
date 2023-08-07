@@ -27,6 +27,9 @@ jobs:
       - name: Change the directory
         run: cd dst/
 
+      - name: Remove the moved git repo
+        run: rm -r .git/
+
       - name: Init the repo
         run: git init
         
