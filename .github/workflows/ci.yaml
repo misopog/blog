@@ -21,7 +21,7 @@ jobs:
         run: curl -sLO https://rgz.ee/bin/ssg && chmod 777 ssg 
 
       - name: Build the website
-        run: rm dst/.files && ./ssg src dst 'blog' 'https://blog.misopog.xyz'
+        run: ./ssg src dst 'blog' 'https://blog.misopog.xyz'
       
       - name: Change the directory
         run: cd dst/
