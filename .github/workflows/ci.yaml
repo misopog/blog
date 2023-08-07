@@ -31,7 +31,7 @@ jobs:
         run: mv dst/* . && rm -r dst && ls -laH
 
       - name: Github Cli auth
-        run: gh auth --with-token $GH_TOKEN
+        run: gh auth login --with-token $GH_TOKEN
         env:
           GH_TOKEN: ${{ github.token }}
           
