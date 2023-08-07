@@ -27,8 +27,8 @@ jobs:
       - name: Change the directory
         run: cd dst/
 
-      - name: Remove the moved git repo
-        run: rm -r .git/
+      - name: show me the files i need it plsplspls
+        run: ls -laH
 
       - name: Init the repo
         run: git init
