@@ -22,7 +22,7 @@ jobs:
         run: mkdir dst
         
       - name: Install ssg
-        run: curl -sLO https://rgz.ee/bin/ssg && chmod 777 ssg 
+        run: curl -sLO https://romanzolotarev.com/bin/ssg && chmod 777 ssg 
 
       - name: Install lowdown
         run: sudo apt install lowdown
