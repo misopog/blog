@@ -98,3 +98,24 @@ a img:hover {
 a {
   color: #fff;
 }
+
+table {
+  border-collapse: collapse;
+  display: block;
+  overflow: auto;
+  width: 100%;
+}
+
+table th {
+  font-weight: 600;
+}
+
+table td,
+table th {
+  border: 1px solid #fff;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px ;
+}
