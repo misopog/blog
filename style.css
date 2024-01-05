@@ -103,8 +103,8 @@ table {
   border-collapse: collapse;
   display: block;
   overflow: auto;
-  width: 100%;
 }
+
 
 table th {
   font-weight: 600;
@@ -118,4 +118,8 @@ table th {
 
 table tr {
   border-top: 1px ;
+}
+
+.posts table td {
+  border: 0px
 }
