@@ -1,36 +1,36 @@
+---
+
 name: CI
-run-name: ssg blog deploy 
+run-name: ssg blog deploy
 permissions:
   contents: write
 on:
   push:
-    
 
 jobs:
   build:
     runs-on: ubuntu-latest
     environment: deploy
     steps:
-      
-      - name: Checkout 🛎️
+      - name: checkout
         uses: actions/checkout@v3
-      
-      - name: Clone the repo 
-        run: git clone https://github.com/misopog/blog src/ -b main
-      
-      - name: Create the dst folder
-        run: mkdir dst
-        
-      - name: Install ssg
-        run: curl -sLO https://romanzolotarev.com/bin/ssg && chmod 777 ssg 
 
-      - name: Install lowdown
+      - name: clone the repo
+        run: git clone https://github.com/misopog/blog src/ -b main
+
+      - name: create the dst folder
+        run: mkdir dst
+
+      - name: install ssg
+        run: curl -sLO https://romanzolotarev.com/bin/ssg && chmod 777 ssg
+
+      - name: install lowdown
         run: sudo apt install lowdown
-      
-      - name: Build the website
+
+      - name: build the website
         run: ./ssg src dst 'blog' 'https://blog.misopog.xyz'
-      
-      - name: Deploy
+
+      - name: deploy
         uses: JamesIves/github-pages-deploy-action@v4.4.3
         with:
           branch: gh-pages
