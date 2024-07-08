@@ -1,6 +1,5 @@
 ---
-
-name: CI
+name: deploy
 run-name: ssg blog deploy
 permissions:
   contents: write
