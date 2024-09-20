@@ -5,6 +5,8 @@ permissions:
   contents: write
 on:
   push:
+    branches:
+    - '*'
 
 jobs:
   build:
