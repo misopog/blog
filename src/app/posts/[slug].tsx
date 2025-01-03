@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Markdown } from '../../components/markdown'
 
 export async function generateStaticParams() {
-  const postsDirectory = path.join(process.cwd(), '/posts')
+  const postsDirectory = path.join(process.cwd(), './posts')
   const fileNames = fs.readdirSync(postsDirectory)
   
   return fileNames.map((fileName) => ({
