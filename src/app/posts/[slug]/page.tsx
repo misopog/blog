@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
 import Link from 'next/link'
-import { Markdown } from '../../components/markdown'
+import { Markdown } from '../../../components/markdown'
 
 export async function generateStaticParams() {
   const postsDirectory = path.join(process.cwd(), 'posts')
