@@ -81,6 +81,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+       - name: deploy
+         uses: JamesIves/github-pages-deploy-action@v4.4.3
+         with:
+           branch: gh-pages
+           folder: out
