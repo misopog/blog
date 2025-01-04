@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Header from '../components/header'
 
 export default function Home() {
-  const postsDirectory = path.join(process.cwd(), 'posts')
+  const postsDirectory = path.join(process.cwd(), 'src', 'posts')
   const fileNames = fs.readdirSync(postsDirectory)
   
   const posts = fileNames.map((fileName) => {
