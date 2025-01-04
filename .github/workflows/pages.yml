@@ -63,6 +63,9 @@ jobs:
           key: build-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('node_modules/.cache') }}
           enableCrossOsArchive: true
 
+      - name: nojekyll
+        run: touch ./out/.nojekyll
+
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
