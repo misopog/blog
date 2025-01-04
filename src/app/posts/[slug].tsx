@@ -2,10 +2,10 @@ import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
 import Link from 'next/link'
-import { Markdown } from '../../../components/markdown'
+import { Markdown } from '../../components/markdown'
 
 export async function generateStaticParams() {
-  const postsDirectory = path.join(process.cwd(), 'src', 'posts')
+  const postsDirectory = path.join(process.cwd(), 'posts')
   const fileNames = fs.readdirSync(postsDirectory)
   
   return fileNames.map((fileName) => ({
@@ -13,7 +13,8 @@ export async function generateStaticParams() {
   }))
 }
 
-export default async function Post({ params }: { params: { slug: string } }) {
+export default async function Post(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const fullPath = path.join(process.cwd(), 'posts', `${params.slug}.md`)
   const fileContents = fs.readFileSync(fullPath, 'utf8')
   const { data, content } = matter(fileContents)
@@ -33,4 +34,3 @@ export default async function Post({ params }: { params: { slug: string } }) {
     </div>
   )
 }
-
