@@ -31,10 +31,10 @@ export function Markdown({ children }: MarkdownProps) {
           <ol className="list-decimal pl-6 mb-4">{children}</ol>
         ),
         code: ({ children }: { children: React.ReactNode }) => (
-          <code className="bg-gray-900 text-gray-200 rounded-lg px-2 py-1">{children}</code>
+          <code className="bg-stone-950 text-gray-200 rounded-lg px-2 py-1">{children}</code>
         ),
         pre: ({ children }: { children: React.ReactNode }) => (
-          <pre className="bg-gray-900 text-gray-200 rounded-lg p-4 mb-4 overflow-x-auto">
+          <pre className="bg-stone-950 text-gray-200 rounded-lg p-4 mb-4 overflow-x-auto">
             {children}
           </pre>
         ),
