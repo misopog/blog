@@ -1,6 +1,6 @@
 ---
-title: Ripping Music From CD's or Vinyl
-date: 2025-23-01
+title: Ripping Music
+date: 2025-01-23
 ---
 
 
@@ -26,10 +26,10 @@ Once you have everything set up, it’s pretty straightforward. Just plug in the
 You can use a tool called “yt-dlp”. Here’s a command that I use in a alias for years:
 
 ```
-yt-dlp [link] -x -f 'ba' --audio-format opus --parse-metadata title:%(artist)s - %(title)s.%(ext)s --embed-thumbnail -o %(title)s .%(ext)s
+yt-dlp LINK -x -f 'ba' --audio-format opus --parse-metadata title:%(artist)s - %(title)s.%(ext)s --embed-thumbnail -o %(title)s .%(ext)s
 ```
 
-In this command, replace `[link]` with the URL of the music you want.
+In this command, replace `LINK` with the URL of the music you want.
 
 **If you want to sound just like the original CDs or vinyl:**
 
