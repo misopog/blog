@@ -4,13 +4,12 @@ date: 2025-01-23
 ---
 
 
-Let's talk about ripping music. It’s important to know what you want before getting started. Here are three common goals:
+Let's talk about ripping music. It’s important to know what you want to rip before getting started.
 
-1. High quality sound.
-2. Small file sizes.
-3. Exact copies of your CDs or vinyl, with the ability to make your own CDs.
+1. Exact copies of your Vinyl (Highest quality, expensive).
+2. Exact copies of your CDs (High quality, cheap).
 
-**If you want the best quality:**
+**If you want the highest quality:**
 
 Get ready. This can get a bit tricky, and you might need to spend some money. Here’s what I suggest you buy:
 
@@ -21,17 +20,9 @@ Get ready. This can get a bit tricky, and you might need to spend some money. He
 
 Once you have everything set up, it’s pretty straightforward. Just plug in the gear and start ripping your vinyl.
 
-**If small file sizes are your goal:**
 
-You can use a tool called “yt-dlp”. Here’s a command that I use in a alias for years:
 
-```
-yt-dlp LINK -x -f 'ba' --audio-format opus --parse-metadata title:%(artist)s - %(title)s.%(ext)s --embed-thumbnail -o %(title)s .%(ext)s
-```
-
-In this command, replace `LINK` with the URL of the music you want.
-
-**If you want to sound just like the original CDs or vinyl:**
+**If you want the best quality cheap**
 
 All you need is a CD burner. They are cheap and easy to find. You also need ripping software. Here are a couple of good options:
 
