@@ -3,6 +3,7 @@
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { useState } from 'react'
+import React from 'react'
 
 interface MarkdownProps {
   children: string
@@ -15,8 +16,11 @@ function extractTextFromReactNode(node: React.ReactNode): string {
   if (Array.isArray(node)) {
     return node.map(extractTextFromReactNode).join('');
   }
-  if (typeof node === 'object' && node) {
-    return extractTextFromReactNode((node as any).props.children);
+  if (React.isValidElement(node)) {
+    const props = node.props as { children?: React.ReactNode };
+    if (props.children) {
+      return extractTextFromReactNode(props.children);
+    }
   }
   return '';
 }
