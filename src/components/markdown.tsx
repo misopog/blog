@@ -8,6 +8,32 @@ interface MarkdownProps {
   children: string
 }
 
+function Pre({ children }: { children: React.ReactNode }) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = () => {
+    if (children) {
+      navigator.clipboard.writeText(children.toString())
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }
+  }
+
+  return (
+    <div className="relative">
+      <button
+        onClick={handleCopy}
+        className="absolute right-2 top-2 bg-gray-800 text-white px-2 py-1 text-xs rounded"
+      >
+        {copied ? 'Copied!' : 'Copy'}
+      </button>
+      <pre className="bg-zinc-950 text-gray-200 rounded-lg p-4 mb-4 overflow-x-auto">
+        {children}
+      </pre>
+    </div>
+  )
+}
+
 export function Markdown({ children }: MarkdownProps) {
   return (
     <ReactMarkdown
@@ -36,31 +62,7 @@ export function Markdown({ children }: MarkdownProps) {
         code: ({ children }: { children: React.ReactNode }) => (
           <code className="bg-zinc-950 text-gray-200 rounded-lg px-2 py-1">{children}</code>
         ),
-        pre: ({ children }: { children: React.ReactNode }) => {
-          const [copied, setCopied] = useState(false)
-
-          const handleCopy = () => {
-            if (children) {
-              navigator.clipboard.writeText(children.toString())
-              setCopied(true)
-              setTimeout(() => setCopied(false), 2000)
-            }
-          }
-
-          return (
-            <div className="relative">
-              <button
-                onClick={handleCopy}
-                className="absolute right-2 top-2 bg-gray-800 text-white px-2 py-1 text-xs rounded"
-              >
-                {copied ? 'Copied!' : 'Copy'}
-              </button>
-              <pre className="bg-zinc-950 text-gray-200 rounded-lg p-4 mb-4 overflow-x-auto">
-                {children}
-              </pre>
-            </div>
-          )
-        },
+        pre: Pre,
         table: ({ children }) => (
           <div className="overflow-x-auto mb-4">
             <table className="min-w-full border-collapse border border-gray-300">
