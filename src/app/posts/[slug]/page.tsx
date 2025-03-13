@@ -3,8 +3,10 @@ import { Markdown } from '@/components/markdown'
 import { BlogPostCard } from '@/components/blog-post-card'
 import { notFound } from 'next/navigation'
 
-type Props = {
-  params: { slug: string }
+interface PageProps {
+  params: {
+    slug: string
+  }
 }
 
 export async function generateStaticParams() {
@@ -14,7 +16,7 @@ export async function generateStaticParams() {
   }))
 }
 
-export default function PostPage({ params }: Props) {
+export default function PostPage({ params }: PageProps) {
   const post = getPostBySlug(params.slug)
   const relatedPosts = getRelatedPosts(params.slug)
 
