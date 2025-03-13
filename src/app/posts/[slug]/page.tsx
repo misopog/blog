@@ -7,9 +7,10 @@ interface PostPageProps {
   params: {
     slug: string
   }
+  searchParams: { [key: string]: string | string[] | undefined }
 }
 
-export default function PostPage({ params }: PostPageProps) {
+export default async function PostPage({ params }: PostPageProps) {
   const post = getPostBySlug(params.slug)
   const relatedPosts = getRelatedPosts(params.slug)
 
