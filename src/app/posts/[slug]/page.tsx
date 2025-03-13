@@ -1,4 +1,4 @@
-import { getPostBySlug, getRelatedPosts } from '@/lib/blog'
+import { getPostBySlug, getRelatedPosts, getAllPosts } from '@/lib/blog'
 import { Markdown } from '@/components/markdown'
 import { BlogPostCard } from '@/components/blog-post-card'
 import { notFound } from 'next/navigation'
@@ -6,6 +6,13 @@ import { notFound } from 'next/navigation'
 type Props = {
   params: Promise<{ slug: string }>
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export async function generateStaticParams() {
+  const posts = getAllPosts()
+  return posts.map((post) => ({
+    slug: post.slug,
+  }))
 }
 
 export default async function PostPage({ params, searchParams }: Props) {
