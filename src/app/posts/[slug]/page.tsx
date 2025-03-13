@@ -3,16 +3,15 @@ import { Markdown } from '@/components/markdown'
 import { BlogPostCard } from '@/components/blog-post-card'
 import { notFound } from 'next/navigation'
 
-interface PostPageProps {
-  params: {
-    slug: string
-  }
+type Props = {
+  params: Promise<{ slug: string }>
   searchParams: { [key: string]: string | string[] | undefined }
 }
 
-export default async function PostPage({ params }: PostPageProps) {
-  const post = getPostBySlug(params.slug)
-  const relatedPosts = getRelatedPosts(params.slug)
+export default async function PostPage({ params }: Props) {
+  const { slug } = await params
+  const post = getPostBySlug(slug)
+  const relatedPosts = getRelatedPosts(slug)
 
   if (!post) {
     notFound()
