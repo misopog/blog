@@ -7,7 +7,7 @@ interface BlogPostCardProps {
 
 export function BlogPostCard({ post }: BlogPostCardProps) {
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900 transition-all hover:border-zinc-700 hover:bg-zinc-800">
+    <article className="group relative flex flex-col overflow-hidden rounded-lg border border-zinc-800 hover:bg-zinc-900 transition-all hover:border-zinc-700 hover:bg-zinc-800">
       <div className="flex flex-1 flex-col p-6">
         <div className="flex items-center gap-4 text-sm text-zinc-400">
           <time dateTime={post.date}>
