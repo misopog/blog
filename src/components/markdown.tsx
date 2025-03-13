@@ -40,7 +40,7 @@ function Pre({ children }: { children: React.ReactNode }) {
     <div className="relative">
       <button
         onClick={handleCopy}
-        className="absolute right-2 top-2 bg-gray-800 text-white p-1.5 rounded hover:bg-gray-700 transition-colors"
+        className="absolute right-2 top-2 border-zinc-800 hover:bg-zinc-900 text-white p-1.5 rounded transition-colors"
         aria-label={copied ? "Copied" : "Copy to clipboard"}
       >
         {copied ? <ClipboardCheck size={16} /> : <Clipboard size={16} />}
