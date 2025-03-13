@@ -8,18 +8,27 @@ interface MarkdownProps {
   children: string
 }
 
+function extractTextFromReactNode(node: React.ReactNode): string {
+  if (typeof node === 'string') {
+    return node;
+  }
+  if (Array.isArray(node)) {
+    return node.map(extractTextFromReactNode).join('');
+  }
+  if (typeof node === 'object' && node) {
+    return extractTextFromReactNode((node as any).props.children);
+  }
+  return '';
+}
+
 function Pre({ children }: { children: React.ReactNode }) {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = () => {
-    if (children) {
-      const text = Array.isArray(children)
-        ? children.map((child) => (typeof child === 'string' ? child : '')).join('')
-        : children.toString()
-      navigator.clipboard.writeText(text)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    }
+    const text = extractTextFromReactNode(children);
+    navigator.clipboard.writeText(text)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
 
   return (
