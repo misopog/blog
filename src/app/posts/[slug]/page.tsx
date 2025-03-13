@@ -4,8 +4,7 @@ import { BlogPostCard } from '@/components/blog-post-card'
 import { notFound } from 'next/navigation'
 
 type Props = {
-  params: Promise<{ slug: string }>
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  params: { slug: string }
 }
 
 export async function generateStaticParams() {
@@ -15,11 +14,9 @@ export async function generateStaticParams() {
   }))
 }
 
-export default async function PostPage({ params, searchParams }: Props) {
-  const { slug } = await params
-  await searchParams // we dont use searchParams but need to await it
-  const post = getPostBySlug(slug)
-  const relatedPosts = getRelatedPosts(slug)
+export default function PostPage({ params }: Props) {
+  const post = getPostBySlug(params.slug)
+  const relatedPosts = getRelatedPosts(params.slug)
 
   if (!post) {
     notFound()
