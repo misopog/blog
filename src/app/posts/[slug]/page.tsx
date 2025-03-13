@@ -2,6 +2,7 @@ import { getPostBySlug, getRelatedPosts, getAllPosts } from '@/lib/blog'
 import { Markdown } from '@/components/markdown'
 import { BlogPostCard } from '@/components/blog-post-card'
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 
 export async function generateStaticParams() {
   const posts = getAllPosts()
@@ -13,11 +14,10 @@ export async function generateStaticParams() {
 export default async function PostPage({
   params,
 }: {
-  params: Promise<{ slug: string }>
+  params: { slug: string }
 }) {
-  const { slug } = await params
-  const post = getPostBySlug(slug)
-  const relatedPosts = getRelatedPosts(slug)
+  const post = getPostBySlug(params.slug)
+  const relatedPosts = getRelatedPosts(params.slug)
 
   if (!post) {
     notFound()
@@ -26,6 +26,7 @@ export default async function PostPage({
   return (
     <article className="min-h-screen bg-black text-gray-100">
       <div className="max-w-4xl mx-auto py-12 px-4">
+        <Link href="/" className="text-blue-400 mb-8 block">&larr; Back to home</Link>
         <header className="mb-8">
           <div className="flex items-center gap-4 text-sm text-zinc-400 mb-4">
             <time dateTime={post.date}>
