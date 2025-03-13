@@ -5,11 +5,12 @@ import { notFound } from 'next/navigation'
 
 type Props = {
   params: Promise<{ slug: string }>
-  searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
-export default async function PostPage({ params }: Props) {
+export default async function PostPage({ params, searchParams }: Props) {
   const { slug } = await params
+  await searchParams // we dont use searchParams but need to await it
   const post = getPostBySlug(slug)
   const relatedPosts = getRelatedPosts(slug)
 
