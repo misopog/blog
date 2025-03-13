@@ -13,7 +13,10 @@ function Pre({ children }: { children: React.ReactNode }) {
 
   const handleCopy = () => {
     if (children) {
-      navigator.clipboard.writeText(children.toString())
+      const text = Array.isArray(children)
+        ? children.map((child) => (typeof child === 'string' ? child : '')).join('')
+        : children.toString()
+      navigator.clipboard.writeText(text)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     }
