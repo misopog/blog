@@ -16,6 +16,12 @@
 #define MAX_TITLE 128
 #define MAX_DATE 32
 
+struct buf {
+    char* data;
+    unsigned int len;
+    unsigned int cap;
+};
+
 typedef struct {
     char filename[MAX_PATH];
     char title[MAX_TITLE];
@@ -99,7 +105,7 @@ void parse_front_matter(const char* md, char* title, char* date, const char** co
 }
 
 // have to put this outside of md2html to stop compiler from bitching and to fix this shit not compiling 
-void process_output(const char* text, size_t size, void* userdata) {
+static void process_output(const MD_CHAR* text, MD_SIZE size, void* userdata) {
     struct buf* b = (struct buf*)userdata;
     if (b->len + size < b->cap) {
         memcpy(b->data + b->len, text, size);
@@ -109,17 +115,19 @@ void process_output(const char* text, size_t size, void* userdata) {
 
 // convert markdown to html
 void md2html(const char* md, char* html, unsigned int html_size) {
-    struct buf out = {
-        .data = malloc(html_size),
-        .len = 0,
-        .cap = html_size
-    };
+    struct buf out;
+    out.data = malloc(html_size);
+    out.len = 0;
+    out.cap = html_size;
 
     md_html(md, (MD_SIZE)strlen(md), process_output, &out, 0, 0);
 
-    out.data[out.len] = '\0';
-    strncpy(html, out.data, html_size - 1);
-    html[html_size - 1] = '\0';
+    if (out.len < html_size) {
+        out.data[out.len] = '\0';
+        strncpy(html, out.data, html_size - 1);
+        html[html_size - 1] = '\0';
+    }
+
     free(out.data);
 }
 
