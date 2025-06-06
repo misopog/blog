@@ -25,8 +25,8 @@ jobs:
               - name: build with make and gcc
                 run: make
         
-              - name: run make cleanrun
-                run: make cleanrun
+              - name: run blog 
+                run: ./blog 
         
               - name: deploy
                 uses: JamesIves/github-pages-deploy-action@v4
