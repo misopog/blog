@@ -24,7 +24,7 @@ jobs:
 
       - name: build with debug symbols
         run: |
-          make clean
+          make
 
       - name: enable core dumps
         run: |
