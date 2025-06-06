@@ -19,6 +19,9 @@ jobs:
               
               - name: cd to the repo
                 run: cd /home/runner/work/blog/blog 
+              
+              - name: ls
+                run: ls -laH
 
               - name: install tidy-html and build tools
                 run: |
