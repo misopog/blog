@@ -12,7 +12,7 @@
 #define OUTPUT_FOLDER "output/"
 #define TEMP_FOLDER "temp/"
 #define MAX_POSTS 128
-#define MAX_PATH 256
+#define MAX_PATH 512
 #define MAX_TITLE 128
 #define MAX_DATE 32
 
