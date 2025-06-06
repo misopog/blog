@@ -16,15 +16,6 @@ jobs:
                 uses: actions/checkout@v4
                 with:
                     submodules: 'recursive'
-              
-              - name: cd to the repo
-                run: cd /home/runner/work/blog/blog 
-              
-              - name: ls
-                run: ls -laH
-
-              - name: list template dir
-                run: ls -l template/
 
               - name: install tidy-html and build tools
                 run: |
