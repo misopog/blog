@@ -1,34 +1,56 @@
 name: deploy to gh pages
 permissions:
-    contents: write
+  contents: write
 
 on:
-    push:
-        branches:
-            - master
+  push:
+    branches:
+      - master
 
 jobs:
-    build-and-deploy:
-        runs-on: ubuntu-latest
+  build-and-deploy:
+    runs-on: ubuntu-latest
 
-        steps:
-              - name: checkout repository
-                uses: actions/checkout@v4
-                with:
-                    submodules: 'recursive'
-        
-              - name: install tidy-html and build tools
-                run: |
-                  sudo apt-get update
-                  sudo apt-get install -y tidy make gcc
-        
-              - name: build with make and gcc
-                run: make
-        
-              - name: run blog 
-                run: ./blog 
-        
-              - name: deploy
-                uses: JamesIves/github-pages-deploy-action@v4
-                with:
-                  folder: output
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+
+      - name: install dependencies (tidy, build tools, debug tools)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tidy make gcc gdb valgrind
+
+      - name: build with debug symbols
+        run: |
+          make clean
+          make CFLAGS="-g -Wall -Wextra -std=c99"
+
+      - name: enable core dumps
+        run: |
+          ulimit -c unlimited
+          echo '/tmp/core.%e.%p' | sudo tee /proc/sys/kernel/core_pattern
+
+      - name: run ./blog and catch segfault
+        run: |
+          ./blog || (
+            echo "Segmentation fault detected!"
+            COREFILE=$(ls /tmp/core.* 2>/dev/null || true)
+            if [ -n "$COREFILE" ]; then
+              echo "Core file: $COREFILE"
+              gdb -batch -ex "bt" ./blog "$COREFILE"
+            else
+              echo "No core file found."
+            fi
+            exit 1
+          )
+
+      - name: run with Valgrind (optional diagnostics)
+        run: |
+          valgrind --leak-check=full --track-origins=yes ./blog || true
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: output
