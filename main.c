@@ -108,18 +108,21 @@ void process_output(const char* text, size_t size, void* userdata) {
 }
 
 // convert markdown to html
-void md2html(const char* md, char* html, size_t html_size) {
-    struct buf {
-        char* data;
-        size_t len;
-        size_t cap;
-    } out = { malloc(html_size), 0, html_size };
-    md_html(md, strlen(md), process_output, &out, 0, 0);
-    out.data[out.len] = 0;
+void md2html(const char* md, char* html, unsigned int html_size) {
+    struct buf out = {
+        .data = malloc(html_size),
+        .len = 0,
+        .cap = html_size
+    };
+
+    md_html(md, (MD_SIZE)strlen(md), process_output, &out, 0, 0);
+
+    out.data[out.len] = '\0';
     strncpy(html, out.data, html_size - 1);
-    html[html_size - 1] = 0;
+    html[html_size - 1] = '\0';
     free(out.data);
 }
+
 
 // replace placeholder in template
 void replace_placeholder(char* buf, size_t bufsize, const char* placeholder, const char* value) {
