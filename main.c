@@ -98,6 +98,15 @@ void parse_front_matter(const char* md, char* title, char* date, const char** co
     *content_start = md;
 }
 
+// have to put this outside of md2html to stop compiler from bitching and to fix this shit not compiling 
+void process_output(const char* text, size_t size, void* userdata) {
+    struct buf* b = (struct buf*)userdata;
+    if (b->len + size < b->cap) {
+        memcpy(b->data + b->len, text, size);
+        b->len += size;
+    }
+}
+
 // convert markdown to html
 void md2html(const char* md, char* html, size_t html_size) {
     struct buf {
@@ -105,13 +114,6 @@ void md2html(const char* md, char* html, size_t html_size) {
         size_t len;
         size_t cap;
     } out = { malloc(html_size), 0, html_size };
-    void process_output(const char* text, size_t size, void* userdata) {
-        struct buf* b = (struct buf*)userdata;
-        if (b->len + size < b->cap) {
-            memcpy(b->data + b->len, text, size);
-            b->len += size;
-        }
-    }
     md_html(md, strlen(md), process_output, &out, 0, 0);
     out.data[out.len] = 0;
     strncpy(html, out.data, html_size - 1);
