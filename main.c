@@ -34,6 +34,13 @@ void make_folder(const char* path) {
     }
 }
 
+// format html using tidy 
+void tidy_html(const char* filepath) {
+    char cmd[MAX_PATH + 128];
+    snprintf(cmd, sizeof(cmd), "tidy -indent -modify -quiet \"%s\"", filepath);
+    system(cmd);
+}
+
 // read file into buffer (caller frees)
 char* read_file(const char* path) {
     FILE* f = fopen(path, "rb");
@@ -243,13 +250,6 @@ void delete_dir(const char* path) {
     }
     closedir(dir);
     rmdir(path);
-}
-
-// format html using tidy 
-void tidy_html(const char* filepath) {
-    char cmd[MAX_PATH + 128];
-    snprintf(cmd, sizeof(cmd), "tidy -indent -modify -quiet \"%s\"", filepath);
-    system(cmd);
 }
 
 int main() {
