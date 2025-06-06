@@ -25,7 +25,6 @@ jobs:
       - name: build with debug symbols
         run: |
           make clean
-          make CFLAGS="-g -Wall -Wextra -std=c99"
 
       - name: enable core dumps
         run: |

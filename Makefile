@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99 -Ilib/md4c/src
+CFLAGS = -g -Wall -Wextra -std=c99 -Ilib/md4c/src
 TARGET = blog
 
 SRC = main.c \
