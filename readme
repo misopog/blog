@@ -35,12 +35,12 @@ usage
    you need to put all your files like this:
 
 - template/ contains:
-    - header.html     - html header section
-    - footer.html     - html footer section
-    - index.html      - layout for the main blog index
-    - post-temp.html  - layout for individual posts
-    - style.css       - stylesheet for the blog
-    - script.js       - include your js here if needed
+    - header.html     => html header section
+    - footer.html     => html footer section
+    - index.html      => layout for the main blog index
+    - post_temp.html  => layout for individual posts
+    - style.css       => stylesheet for the blog
+    - script.js       => include your js here if needed
 
     you must edit the copy_files_to_output() function
     to include additional files.
