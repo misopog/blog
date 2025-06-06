@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -Wall -Wextra -std=c99 -Ilib/md4c/src
+CFLAGS = -g -Werror=implicit-function-declaration -Wall -Wextra -std=c99 -Ilib/md4c/src
 TARGET = blog
 
 SRC = main.c \
