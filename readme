@@ -1,0 +1,62 @@
+blog - static blog generator in pure c
+======================================
+
+description
+-----------
+blog is a minimal, very opinionated static blog generator written in pure c with md4c.
+
+features
+--------
+- parses markdown with md4c
+- cleans and formats html with tidy
+- minimal dependencies
+- **lightning fast**
+
+dependencies
+------------
+- md4c (https://github.com/mity/md4c)
+- tidy (needs to be installed) (https://www.html-tidy.org)
+
+installation
+------------
+1. clone the repository:
+
+       git clone --recurse-submodules https://github.com/misopog/blog.git
+       cd blog
+
+2. build using make:
+
+       make
+
+   this will generate the blog executable.
+
+usage
+-----
+   you need to put all your files like this:
+
+- template/ contains:
+    - header.html     - html header section
+    - footer.html     - html footer section
+    - index.html      - layout for the main blog index
+    - post-temp.html  - layout for individual posts
+    - style.css       - stylesheet for the blog
+    - script.js       - include your js here if needed
+
+    you must edit the copy_files_to_output() function
+    to include additional files.
+
+- posts/ contains your markdown files.
+    each file must include title and date in the front matter.
+    tags and other metadata are not supported.
+
+   then just run ./blog
+
+configuration
+-------------
+currently, blog is configured via definitions in main.c.
+edit the paths there if needed.
+
+license
+-------
+gplv3 license. see license file for details.
+

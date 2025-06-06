@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>blog</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div id="container">
+    {$header}
+    <h1>posts</h1>
+    {$posts}
+    {$footer}
+    </div>
+</body>
+</html>
