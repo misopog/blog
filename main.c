@@ -155,6 +155,11 @@ void load_templates() {
     if (!footer_html) footer_html = read_file(TEMPLATE_FOLDER "footer.html");
     if (!post_template) post_template = read_file(TEMPLATE_FOLDER "post_temp.html");
     if (!index_template) index_template = read_file(TEMPLATE_FOLDER "index.html");
+
+    if (!header_html || !footer_html || !post_template || !index_template) {
+        fprintf(stderr, "err: template files are missing '%s'\n", TEMPLATE_FOLDER);
+        exit(1);
+    }
 }
 
 // read all posts from posts/

@@ -38,3 +38,6 @@ jobs:
                 uses: JamesIves/github-pages-deploy-action@v4
                 with:
                   folder: output
+              
+              - name: list template dir
+                run: ls -l template/
