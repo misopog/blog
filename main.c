@@ -32,19 +32,66 @@ typedef struct {
 Post posts[MAX_POSTS];
 int post_count = 0;
 
-// make a folder if it doesn't exist
-void make_folder(const char* path) {
+// format html using tidy 
+void tidy_html(const char* filepath) {
+    char cmd[MAX_PATH + 128];
+    snprintf(cmd, sizeof(cmd), "tidy -indent -modify -quiet \"%s\"", filepath);
+    system(cmd);
+}
+
+// make a dir if it doesn't exist
+void make_dir(const char* path) {
     struct stat st = {0};
     if (stat(path, &st) == -1) {
         mkdir(path, 0700);
     }
 }
 
-// format html using tidy 
-void tidy_html(const char* filepath) {
-    char cmd[MAX_PATH + 128];
-    snprintf(cmd, sizeof(cmd), "tidy -indent -modify -quiet \"%s\"", filepath);
-    system(cmd);
+// delete a directory and its contents
+void delete_dir(const char* path) {
+    DIR* dir = opendir(path);
+    if (!dir) return;
+    struct dirent* ent;
+    char filepath[MAX_PATH];
+    while ((ent = readdir(dir)) != NULL) {
+        if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0) continue;
+        snprintf(filepath, sizeof(filepath), "%s/%s", path, ent->d_name);
+        struct stat st;
+        if (stat(filepath, &st) == 0) {
+            if (S_ISDIR(st.st_mode)) {
+                delete_dir(filepath);
+            } else {
+                remove(filepath);
+            }
+        }
+    }
+    closedir(dir);
+    rmdir(path);
+}
+
+// copy a dir and its contents
+
+void copy_dir(const char* src, const char* dst) {
+    DIR* dir = opendir(src);
+    if (!dir) return;
+    make_dir(dst);
+    struct dirent* ent;
+    char srcpath[MAX_PATH];
+    char dstpath[MAX_PATH];
+    struct stat st;
+    while ((ent = readdir(dir)) != NULL) {
+        if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0) continue;
+        snprintf(srcpath, sizeof(srcpath), "%s/%s", src, ent->d_name);
+        snprintf(dstpath, sizeof(dstpath), "%s/%s", dst, ent->d_name);
+        if (stat(srcpath, &st) == 0) {
+            if (S_ISDIR(st.st_mode)) {
+                copy_dir(srcpath, dstpath);
+            } else {
+                copy_file(srcpath, dstpath);
+            }
+        }
+    }
+    closedir(dir);
 }
 
 // read file into buffer (caller frees)
@@ -191,7 +238,7 @@ void process_posts() {
 
 // make html for each post
 void process_post() {
-    make_folder(OUTPUT_FOLDER "posts/");
+    make_dir(OUTPUT_FOLDER "posts/");
     for (int i = 0; i < post_count; ++i) {
         char outname[MAX_PATH];
         strncpy(outname, posts[i].filename, MAX_PATH - 1);
@@ -212,8 +259,7 @@ void process_post() {
 // make html table of posts
 void generate_posts_table(char* table_html, size_t size) {
     snprintf(table_html, size,
-        "<table class=\"posts-table\">\n"
-        "<tr><th>Title</th><th>Date</th></tr>\n");
+        "<table class=\"posts-table\">\n");
     for (int i = 0; i < post_count; ++i) {
         char name_no_ext[MAX_PATH];
         strncpy(name_no_ext, posts[i].filename, MAX_PATH - 1);
@@ -246,36 +292,28 @@ void generate_index() {
 void copy_files_to_output() {
     copy_file(TEMPLATE_FOLDER "style.css", OUTPUT_FOLDER "style.css");
     copy_file(TEMPLATE_FOLDER "script.js", OUTPUT_FOLDER "script.js");
+    copy_dir("img", OUTPUT_FOLDER "img");
 }
 
-// delete a directory and its contents
-void delete_dir(const char* path) {
-    DIR* dir = opendir(path);
-    if (!dir) return;
-    struct dirent* ent;
-    char filepath[MAX_PATH];
-    while ((ent = readdir(dir)) != NULL) {
-        if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0) continue;
-        snprintf(filepath, sizeof(filepath), "%s/%s", path, ent->d_name);
-        struct stat st;
-        if (stat(filepath, &st) == 0) {
-            if (S_ISDIR(st.st_mode)) {
-                delete_dir(filepath);
-            } else {
-                remove(filepath);
-            }
-        }
-    }
-    closedir(dir);
-    rmdir(path);
+// get and compare all dates from posts 
+int compare_post_by_date(const void* a, const void* b) {
+    const Post* pa = (const Post*)a;
+    const Post* pb = (const Post*)b;
+    return strcmp(pb->date, pa->date); // newest first
+}
+
+// then sort
+void sort_posts() {
+    qsort(posts, post_count, sizeof(Post), compare_post_by_date);
 }
 
 int main() {
     delete_dir(OUTPUT_FOLDER);
-    make_folder(OUTPUT_FOLDER);
+    make_dir(OUTPUT_FOLDER);
     load_templates();
     process_posts();
     process_post();
+    sort_posts();
     generate_index();
     copy_files_to_output();
     printf("blog generated in '%s'\n", OUTPUT_FOLDER);
