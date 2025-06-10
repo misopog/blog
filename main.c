@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <time.h>
 
 #define TEMPLATE_FOLDER "template/"
 #define POSTS_FOLDER "posts/"
@@ -186,7 +187,6 @@ void replace_placeholder(char* buf, size_t bufsize, const char* placeholder, con
     const char* p = buf;
     char* out = tmp;
     size_t placeholder_len = strlen(placeholder);
-    size_t value_len = strlen(value);
     while (*p && (out - tmp) < (int)(sizeof(tmp) - 1)) {
         const char* match = strstr(p, placeholder);
         if (!match) {
@@ -302,6 +302,70 @@ void generate_index() {
     tidy_html(OUTPUT_FOLDER "index.html");
 }
 
+// generate rss feed
+void generate_rss(const Post* posts, int post_count) {
+    char path[MAX_PATH];
+    snprintf(path, sizeof(path), OUTPUT_FOLDER "rss.xml");
+    FILE* f = fopen(path, "w");
+    if (!f) {
+        fprintf(stderr, "failed to write rss: %s\n", path);
+        return;
+    }
+    fprintf(f,
+        "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
+        "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n"
+        "<channel>\n"
+        "  <title>misopog's blog</title>\n"
+        "  <link>https://blog.misopog.xyz</link>\n"
+        "  <description>random stuffs</description>\n"
+	"  <atom:link href=\"https://blog.misopog.xyz/rss.xml\" rel=\"self\" type=\"application/rss+xml\" />\n"
+    );
+    for (int i = 0; i < post_count; ++i) {
+        char name[MAX_PATH];
+        strncpy(name, posts[i].filename, MAX_PATH - 1);
+        char* ext = strstr(name, ".md");
+        if (ext) *ext = 0;
+	
+    // WARNING - VERY JANKY CODE TO GET OVER RFC-822
+    char date[128];
+    struct tm t = {0};
+    int year, month, day;
+    if (sscanf(posts[i].date, "%4d-%2d-%2d", &year, &month, &day) == 3) {
+        t.tm_year = year - 1900;
+        t.tm_mon = month - 1;
+        t.tm_mday = day;
+        t.tm_hour = 0;
+        t.tm_min = 0;
+        t.tm_sec = 0;
+        mktime(&t); // normalize
+        strftime(date, sizeof(date), "%a, %d %b %Y %H:%M:%S +0000", &t);
+    } else {
+        strncpy(date, "Thu, 01 Jan 1970 00:00:00 +0000", sizeof(date)); // fallback
+    }
+
+
+        fprintf(f,
+            "  <item>\n"
+            "    <title>%s</title>\n"
+            "    <link>https://blog.misopog.xyz/posts/%s.html</link>\n"
+            "    <pubDate>%s</pubDate>\n"
+            "    <guid>https://blog.misopog.xyz/posts/%s.html</guid>\n"
+            "    <description><![CDATA[%s]]></description>\n"
+            "  </item>\n",
+            posts[i].title,
+            name,
+            date,
+            name,
+            posts[i].html_content
+        );
+    }
+
+    fprintf(f, "</channel>\n</rss>\n");
+    fclose(f);
+}
+
+
+
 // copy files to output
 void copy_files_to_output() {
     copy_file(TEMPLATE_FOLDER "style.css", OUTPUT_FOLDER "style.css");
@@ -326,9 +390,10 @@ int main() {
     make_dir(OUTPUT_FOLDER);
     load_templates();
     process_posts();
-    process_post();
     sort_posts();
+    process_post();
     generate_index();
+    generate_rss(posts, post_count);
     copy_files_to_output();
     printf("blog generated in '%s'\n", OUTPUT_FOLDER);
     free(header_html); free(footer_html); free(post_template); free(index_template);
