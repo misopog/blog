@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>blog</title>
+    <title>{$title}</title>
     <link rel="stylesheet" href="../style.css">
     <script src="../script.js"></script>
 </head>
@@ -16,7 +16,11 @@
             </nav>
             <hr>
         </header>
-        {$content}
+	<div class="title">
+	 <h1 class="posttitle">{$title}</h1>
+	 <p class="date">Date added: {$date}</p>
+	</div>
+	{$content}
         {$footer}
     </div>
 </body>

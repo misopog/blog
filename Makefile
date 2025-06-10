@@ -21,6 +21,7 @@ $(TARGET): $(OBJ)
 
 clean:
 	rm -f $(OBJ) $(TARGET)
+	rm -rf output/
 
 run:
 	./$(TARGET)

@@ -10,7 +10,6 @@
 #define TEMPLATE_FOLDER "template/"
 #define POSTS_FOLDER "posts/"
 #define OUTPUT_FOLDER "output/"
-#define TEMP_FOLDER "temp/"
 #define MAX_POSTS 128
 #define MAX_PATH 512
 #define MAX_TITLE 128
@@ -70,7 +69,6 @@ void delete_dir(const char* path) {
 }
 
 // copy a dir and its contents
-
 void copy_dir(const char* src, const char* dst) {
     DIR* dir = opendir(src);
     if (!dir) return;
@@ -166,8 +164,10 @@ void md2html(const char* md, char* html, unsigned int html_size) {
     out.data = malloc(html_size);
     out.len = 0;
     out.cap = html_size;
+    
+    unsigned parserflags = MD_FLAG_TABLES | MD_FLAG_TASKLISTS | MD_FLAG_STRIKETHROUGH;
 
-    md_html(md, (MD_SIZE)strlen(md), process_output, &out, 0, 0);
+    md_html(md, (MD_SIZE)strlen(md), process_output, &out, parserflags, 0);
 
     if (out.len < html_size) {
         out.data[out.len] = '\0';
@@ -181,15 +181,27 @@ void md2html(const char* md, char* html, unsigned int html_size) {
 
 // replace placeholder in template
 void replace_placeholder(char* buf, size_t bufsize, const char* placeholder, const char* value) {
-    char* pos = strstr(buf, placeholder);
-    if (pos) {
-        char tmp[8192];
-        size_t before = pos - buf;
-        snprintf(tmp, sizeof(tmp), "%.*s%s%s", (int)before, buf, value, pos + strlen(placeholder));
-        strncpy(buf, tmp, bufsize - 1);
-        buf[bufsize - 1] = 0;
+    char tmp[16384]; 
+    tmp[0] = 0;
+    const char* p = buf;
+    char* out = tmp;
+    size_t placeholder_len = strlen(placeholder);
+    size_t value_len = strlen(value);
+    while (*p && (out - tmp) < (int)(sizeof(tmp) - 1)) {
+        const char* match = strstr(p, placeholder);
+        if (!match) {
+            strncat(out, p, sizeof(tmp) - strlen(tmp) - 1);
+            break;
+        }
+        size_t bytes_to_copy = match - p;
+        strncat(out, p, bytes_to_copy);
+        strncat(out, value, sizeof(tmp) - strlen(tmp) - 1);
+        p = match + placeholder_len;
     }
+    strncpy(buf, tmp, bufsize - 1);
+    buf[bufsize - 1] = 0;
 }
+
 
 // load templates
 char* header_html = NULL;
@@ -248,9 +260,11 @@ void process_post() {
         char outpath[MAX_PATH], buf[16384];
         snprintf(outpath, sizeof(outpath), OUTPUT_FOLDER "posts/%s.html", outname);
         strncpy(buf, post_template, sizeof(buf) - 1);
+	replace_placeholder(buf, sizeof(buf), "{$title}", posts[i].title);
+	replace_placeholder(buf, sizeof(buf), "{$date}", posts[i].date);
         replace_placeholder(buf, sizeof(buf), "{$header}", header_html ? header_html : "");
         replace_placeholder(buf, sizeof(buf), "{$footer}", footer_html ? footer_html : "");
-        replace_placeholder(buf, sizeof(buf), "{$content}", posts[i].html_content);
+	replace_placeholder(buf, sizeof(buf), "{$content}", posts[i].html_content);
         write_file(outpath, buf);
         tidy_html(outpath); 
     }
