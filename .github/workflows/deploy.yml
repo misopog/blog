@@ -1,34 +1,48 @@
 name: deploy to gh pages
 permissions:
-    contents: write
+  pages: write
+  id-token: write
+  contents: read
 
 on:
-    push:
-        branches:
-            - master
+  push:
+    branches:
+      - master
 
 jobs:
-    build-and-deploy:
-        runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-        steps:
-              - name: checkout repository
-                uses: actions/checkout@v4
-                with:
-                    submodules: 'recursive'
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
-              - name: install tidy-html and build tools
-                run: |
-                  sudo apt-get update
-                  sudo apt-get install -y tidy make gcc
-        
-              - name: build with make and gcc
-                run: make
-        
-              - name: run blog 
-                run: ./blog 
-        
-              - name: deploy
-                uses: JamesIves/github-pages-deploy-action@v4
-                with:
-                  folder: output
+      - name: install tidy-html and build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tidy make gcc
+
+      - name: build
+        run: make
+
+      - name: run blog
+        run: ./blog
+
+      - name: upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: output
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: deploy
+        id: deployment
+        uses: actions/deploy-pages@v3
