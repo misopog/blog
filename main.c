@@ -33,14 +33,16 @@ Post posts[MAX_POSTS];
 int post_count = 0;
 
 // format html using tidy 
-void tidy_html(const char* filepath) {
+void tidy_html(const char* filepath)
+{
     char cmd[MAX_PATH + 128];
     snprintf(cmd, sizeof(cmd), "tidy -indent -modify -quiet \"%s\"", filepath);
     system(cmd);
 }
 
 // make a dir if it doesn't exist
-void make_dir(const char* path) {
+void make_dir(const char* path)
+{
     struct stat st = {0};
     if (stat(path, &st) == -1) {
         mkdir(path, 0700);
@@ -48,7 +50,8 @@ void make_dir(const char* path) {
 }
 
 // delete a directory and its contents
-void delete_dir(const char* path) {
+void delete_dir(const char* path)
+{
     DIR* dir = opendir(path);
     if (!dir) return;
     struct dirent* ent;
@@ -70,7 +73,8 @@ void delete_dir(const char* path) {
 }
 
 // copy a dir and its contents
-void copy_dir(const char* src, const char* dst) {
+void copy_dir(const char* src, const char* dst)
+{
     DIR* dir = opendir(src);
     if (!dir) return;
     make_dir(dst);
@@ -94,7 +98,8 @@ void copy_dir(const char* src, const char* dst) {
 }
 
 // read file into buffer (caller frees)
-char* read_file(const char* path) {
+char* read_file(const char* path)
+{
     FILE* f = fopen(path, "rb");
     if (!f) return NULL;
     fseek(f, 0, SEEK_END);
@@ -109,7 +114,8 @@ char* read_file(const char* path) {
 }
 
 // write buffer to file
-void write_file(const char* path, const char* buf) {
+void write_file(const char* path, const char* buf)
+{
     FILE* f = fopen(path, "wb");
     if (!f) return;
     fwrite(buf, 1, strlen(buf), f);
@@ -117,7 +123,8 @@ void write_file(const char* path, const char* buf) {
 }
 
 // copy file
-void copy_file(const char* src, const char* dst) {
+void copy_file(const char* src, const char* dst)
+{
     char* buf = read_file(src);
     if (buf) {
         write_file(dst, buf);
@@ -126,7 +133,8 @@ void copy_file(const char* src, const char* dst) {
 }
 
 // parse front matter for title and date
-void parse_front_matter(const char* md, char* title, char* date, const char** content_start) {
+void parse_front_matter(const char* md, char* title, char* date, const char** content_start)
+{
     title[0] = 0; date[0] = 0;
     if (strncmp(md, "---", 3) == 0) {
         const char* p = md + 3;
@@ -151,7 +159,8 @@ void parse_front_matter(const char* md, char* title, char* date, const char** co
 }
 
 // have to put this outside of md2html to stop compiler from bitching and to fix this shit not compiling 
-static void process_output(const MD_CHAR* text, MD_SIZE size, void* userdata) {
+static void process_output(const MD_CHAR* text, MD_SIZE size, void* userdata)
+{
     struct buf* b = (struct buf*)userdata;
     if (b->len + size < b->cap) {
         memcpy(b->data + b->len, text, size);
@@ -160,7 +169,8 @@ static void process_output(const MD_CHAR* text, MD_SIZE size, void* userdata) {
 }
 
 // convert markdown to html
-void md2html(const char* md, char* html, unsigned int html_size) {
+void md2html(const char* md, char* html, unsigned int html_size)
+{
     struct buf out;
     out.data = malloc(html_size);
     out.len = 0;
@@ -181,7 +191,8 @@ void md2html(const char* md, char* html, unsigned int html_size) {
 
 
 // replace placeholder in template
-void replace_placeholder(char* buf, size_t bufsize, const char* placeholder, const char* value) {
+void replace_placeholder(char* buf, size_t bufsize, const char* placeholder, const char* value)
+{
     char tmp[16384]; 
     tmp[0] = 0;
     const char* p = buf;
@@ -209,7 +220,8 @@ char* footer_html = NULL;
 char* post_template = NULL;
 char* index_template = NULL;
 
-void load_templates() {
+void load_templates()
+{
     if (!header_html) header_html = read_file(TEMPLATE_FOLDER "header.html");
     if (!footer_html) footer_html = read_file(TEMPLATE_FOLDER "footer.html");
     if (!post_template) post_template = read_file(TEMPLATE_FOLDER "post_temp.html");
@@ -222,7 +234,8 @@ void load_templates() {
 }
 
 // read all posts from posts/
-void process_posts() {
+void process_posts()
+{
     DIR* dir = opendir(POSTS_FOLDER);
     struct dirent* ent;
     post_count = 0;
@@ -249,7 +262,8 @@ void process_posts() {
 }
 
 // make html for each post
-void process_post() {
+void process_post()
+{
     make_dir(OUTPUT_FOLDER "posts/");
     for (int i = 0; i < post_count; ++i) {
         char outname[MAX_PATH];
@@ -271,7 +285,8 @@ void process_post() {
 }
 
 // make html table of posts
-void generate_posts_table(char* table_html, size_t size) {
+void generate_posts_table(char* table_html, size_t size)
+{
     snprintf(table_html, size,
         "<table class=\"posts-table\">\n");
     for (int i = 0; i < post_count; ++i) {
@@ -290,7 +305,8 @@ void generate_posts_table(char* table_html, size_t size) {
 }
 
 // make index.html
-void generate_index() {
+void generate_index()
+{
     char posts_html[8192] = "";
     generate_posts_table(posts_html, sizeof(posts_html));
     char buf[16384];
@@ -303,7 +319,8 @@ void generate_index() {
 }
 
 // generate rss feed
-void generate_rss(const Post* posts, int post_count) {
+void generate_rss(const Post* posts, int post_count)
+{
     char path[MAX_PATH];
     snprintf(path, sizeof(path), OUTPUT_FOLDER "rss.xml");
     FILE* f = fopen(path, "w");
@@ -367,25 +384,29 @@ void generate_rss(const Post* posts, int post_count) {
 
 
 // copy files to output
-void copy_files_to_output() {
+void copy_files_to_output()
+{
     copy_file(TEMPLATE_FOLDER "style.css", OUTPUT_FOLDER "style.css");
     copy_file(TEMPLATE_FOLDER "script.js", OUTPUT_FOLDER "script.js");
     copy_dir("img", OUTPUT_FOLDER "img");
 }
 
 // get and compare all dates from posts 
-int compare_post_by_date(const void* a, const void* b) {
+int compare_post_by_date(const void* a, const void* b)
+{
     const Post* pa = (const Post*)a;
     const Post* pb = (const Post*)b;
     return strcmp(pb->date, pa->date); // newest first
 }
 
 // then sort
-void sort_posts() {
+void sort_posts()
+{
     qsort(posts, post_count, sizeof(Post), compare_post_by_date);
 }
 
-int main() {
+int main()
+{
     delete_dir(OUTPUT_FOLDER);
     make_dir(OUTPUT_FOLDER);
     load_templates();
