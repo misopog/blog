@@ -1,4 +1,4 @@
-CC = gcc
+CC = tcc
 CFLAGS = -g -Wno-format-truncation -Wall -Wextra -std=c99 -Ilib/md4c/src
 TARGET = blog
 
