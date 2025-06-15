@@ -16,13 +16,11 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: install tidy-html and build tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y tidy make tcc
+          sudo apt-get install -y tidy libcmark-gfm-dev libcmark-gfm-extensions-dev make tcc
 
       - name: build
         run: make

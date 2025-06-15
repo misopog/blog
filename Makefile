@@ -1,20 +1,17 @@
 CC = tcc
-CFLAGS = -g -Wno-format-truncation -Wall -Wextra -std=c99 -Ilib/md4c/src
+CFLAGS = -g -Wall -Wextra -std=c99 -I/usr/local/include
+LDFLAGS = -L/usr/local/lib -lcmark-gfm -lcmark-gfm-extensions
 TARGET = blog
 
-SRC = main.c \
-	lib/md4c/src/md4c.c \
-	lib/md4c/src/md4c-html.c \
-	lib/md4c/src/entity.c
-
+SRC = main.c
 OBJ = $(SRC:.c=.o)
 
-.PHONY: all clean
+.PHONY: all clean run cleanrun
 
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -27,3 +24,4 @@ run:
 	./$(TARGET)
 
 cleanrun: clean all run
+

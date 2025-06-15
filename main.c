@@ -1,5 +1,5 @@
-#include "md4c.h"
-#include "md4c-html.h"
+#include <cmark-gfm.h>
+#include <cmark-gfm-core-extensions.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,11 +16,6 @@
 #define MAX_TITLE 128
 #define MAX_DATE 32
 
-struct buf {
-    char* data;
-    unsigned int len;
-    unsigned int cap;
-};
 
 typedef struct {
     char filename[MAX_PATH];
@@ -158,35 +153,27 @@ void parse_front_matter(const char* md, char* title, char* date, const char** co
     *content_start = md;
 }
 
-// have to put this outside of md2html to stop compiler from bitching and to fix this shit not compiling 
-static void process_output(const MD_CHAR* text, MD_SIZE size, void* userdata)
-{
-    struct buf* b = (struct buf*)userdata;
-    if (b->len + size < b->cap) {
-        memcpy(b->data + b->len, text, size);
-        b->len += size;
-    }
-}
-
 // convert markdown to html
 void md2html(const char* md, char* html, unsigned int html_size)
 {
-    struct buf out;
-    out.data = malloc(html_size);
-    out.len = 0;
-    out.cap = html_size;
-    
-    unsigned parserflags = MD_FLAG_TABLES | MD_FLAG_TASKLISTS | MD_FLAG_STRIKETHROUGH;
-
-    md_html(md, (MD_SIZE)strlen(md), process_output, &out, parserflags, 0);
-
-    if (out.len < html_size) {
-        out.data[out.len] = '\0';
-        strncpy(html, out.data, html_size - 1);
-        html[html_size - 1] = '\0';
+    cmark_parser* p = cmark_parser_new(CMARK_OPT_DEFAULT);
+    cmark_gfm_core_extensions_ensure_registered();
+    cmark_parser_attach_syntax_extension(p, cmark_find_syntax_extension("table"));
+    cmark_parser_attach_syntax_extension(p, cmark_find_syntax_extension("strikethrough"));
+    cmark_parser_attach_syntax_extension(p, cmark_find_syntax_extension("autolink"));
+    cmark_parser_attach_syntax_extension(p, cmark_find_syntax_extension("tasklist"));
+    cmark_parser_feed(p, md, strlen(md));
+    cmark_node* doc = cmark_parser_finish(p);
+    char* out = cmark_render_html(doc, CMARK_OPT_DEFAULT, NULL);
+    if (!out) {
+        html[0] = 0;
+        return;
     }
-
-    free(out.data);
+    strncpy(html, out, html_size - 1);
+    html[html_size - 1] = 0;
+    free(out);
+    cmark_node_free(doc);
+    cmark_parser_free(p);
 }
 
 
