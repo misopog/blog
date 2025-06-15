@@ -3,25 +3,25 @@ blog - static blog generator in pure c
 
 description
 -----------
-blog is a minimal, very opinionated static blog generator written in pure c with md4c.
+blog is a minimal, very opinionated static blog generator written in pure c with cmark-gfm.
 
 features
 --------
-- parses markdown with md4c
+- parses markdown with cmark-gfm 
 - cleans and formats html with tidy
 - minimal dependencies
 - **lightning fast**
 
 dependencies
 ------------
-- md4c (https://github.com/mity/md4c)
+- cmark-gfm (https://github.com/github/cmark-gfm)
 - tidy (needs to be installed) (https://www.html-tidy.org)
 
 installation
 ------------
 1. clone the repository:
 
-       git clone --recurse-submodules https://github.com/misopog/blog.git
+       git clone https://github.com/misopog/blog.git
        cd blog
 
 2. build using make:
