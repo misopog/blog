@@ -20,15 +20,16 @@ dependencies
 installation
 ------------
 1. clone the repository:
-
        git clone https://github.com/misopog/blog.git
        cd blog
 
-2. build using make:
+2. install build tools and libs:
+       sudo pacman -Syu tcc make cmark-gfm
 
+2. build using make:
        make
 
-   this will generate the blog executable.
+this will generate the blog executable.
 
 usage
 -----
