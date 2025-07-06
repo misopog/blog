@@ -35,6 +35,42 @@ void tidy_html(const char* filepath)
     system(cmd);
 }
 
+
+// read file into buffer (caller frees)
+char* read_file(const char* path)
+{
+    FILE* f = fopen(path, "rb");
+    if (!f) return NULL;
+    fseek(f, 0, SEEK_END);
+    long len = ftell(f);
+    rewind(f);
+    char* buf = malloc(len + 1);
+    if (!buf) { fclose(f); return NULL; }
+    fread(buf, 1, len, f);
+    buf[len] = 0;
+    fclose(f);
+    return buf;
+}
+
+// write buffer to file
+void write_file(const char* path, const char* buf)
+{
+    FILE* f = fopen(path, "wb");
+    if (!f) return;
+    fwrite(buf, 1, strlen(buf), f);
+    fclose(f);
+}
+
+// copy file
+void copy_file(const char* src, const char* dst)
+{
+    char* buf = read_file(src);
+    if (buf) {
+        write_file(dst, buf);
+        free(buf);
+    }
+}
+
 // make a dir if it doesn't exist
 void make_dir(const char* path)
 {
@@ -90,41 +126,6 @@ void copy_dir(const char* src, const char* dst)
         }
     }
     closedir(dir);
-}
-
-// read file into buffer (caller frees)
-char* read_file(const char* path)
-{
-    FILE* f = fopen(path, "rb");
-    if (!f) return NULL;
-    fseek(f, 0, SEEK_END);
-    long len = ftell(f);
-    rewind(f);
-    char* buf = malloc(len + 1);
-    if (!buf) { fclose(f); return NULL; }
-    fread(buf, 1, len, f);
-    buf[len] = 0;
-    fclose(f);
-    return buf;
-}
-
-// write buffer to file
-void write_file(const char* path, const char* buf)
-{
-    FILE* f = fopen(path, "wb");
-    if (!f) return;
-    fwrite(buf, 1, strlen(buf), f);
-    fclose(f);
-}
-
-// copy file
-void copy_file(const char* src, const char* dst)
-{
-    char* buf = read_file(src);
-    if (buf) {
-        write_file(dst, buf);
-        free(buf);
-    }
 }
 
 // parse front matter for title and date
